@@ -41,16 +41,19 @@ document.querySelectorAll('.inner-cell').forEach(cell => {
         const innerIndex = parseInt(clickedCell.dataset.innerIndex); // "0"-"8"
 
         // Only proceed if cell is empty
-        if (board[outerIndex][innerIndex] === '') {
+        if (cell.textContent === '') {
             if (nextCell == null || nextCell === outerIndex) {
                 outerCell.style.backgroundColor = 'white'; // Highlight the outer square
                 if (board[innerIndex][9] !== '') {
+                    document.querySelectorAll('.outer-cell').forEach(cell => {
+                        cell.style.pointerEvents = "auto";
+                    });
                     nextCell = null; // Reset cell if the outer square already has a winner
                 }
                 else {
                     document.querySelectorAll('.outer-cell').forEach(cell => {
                         if (cell.dataset.outerIndex == innerIndex) {
-                            cell.style.backgroundColor = 'lightgreen';
+                            cell.style.backgroundColor = 'lightblue';
                             cell.style.pointerEvents = "auto";// Highlight the next outer square
                         } else {
                             cell.style.pointerEvents = 'none'; // Disable pointer events for other outer squares
@@ -74,16 +77,33 @@ document.querySelectorAll('.inner-cell').forEach(cell => {
                 console.log(`Inner Win: ${innerWin}`);
                 if (innerWin) {
                     console.log(board);
+                    if (innerWin === 'X') {
+                        outerCell.style.backgroundColor = 'lightcoral';
+                    } else {
+                        outerCell.style.backgroundColor = 'lightgreen';
+                    }
                     outerCell.querySelectorAll('.inner-cell').forEach(cell => {
                         cell.textContent = innerWin;
                     });
                     // Check for outer win
                     outerWin = checkOuterWin(board);
                     if (outerWin) {
-                        document.getElementById(outerwin).dataset.win = parseInt(document.getElementById(outerwin).dataset.win) + 1;
+                        console.log(`Outer Win: ${outerWin}`);
+
+                        document.getElementById(`${outerWin}`).dataset.win = document.getElementById(`${outerWin}`).textContent = `${outerWin} : ` + parseInt(document.getElementById(`${outerWin}`).dataset.win) + 1;
                         document.querySelectorAll('.inner-cell').forEach(cell => {
                             cell.textContent = outerWin;
                         });
+                        if (innerWin === 'X') {
+                            document.querySelectorAll('.outer-cell').forEach(cell => {
+                                cell.style.backgroundColor = "lightcoral";
+                            });
+                        } else {
+                            document.querySelectorAll('.outer-cell').forEach(cell => {
+                                cell.style.backgroundColor = "lightgreen";
+                            });
+                        }
+
                     }
                 }
             }
