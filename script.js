@@ -40,25 +40,26 @@ document.querySelectorAll('.inner-cell').forEach(cell => {
         const outerIndex = parseInt(outerCell.dataset.outerIndex); // "0"-"8"
         const innerIndex = parseInt(clickedCell.dataset.innerIndex); // "0"-"8"
 
-        if (nextCell == null || nextCell === outerIndex) {
-            outerCell.style.backgroundColor = 'white'; // Highlight the outer square
-            if (board[innerIndex][9] !== '') {
-                nextCell = null; // Reset cell if the outer square already has a winner
-            }
-            else {
-                document.querySelectorAll('.outer-cell').forEach(cell => {
-                    if (cell.dataset.outerIndex == innerIndex) {
-                        cell.style.backgroundColor = 'lightgreen';
-                        cell.style.pointerEvents = "auto";// Highlight the next outer square
-                    } else {
-                        cell.style.pointerEvents = 'none'; // Disable pointer events for other outer squares
-                    }
-                });
-                nextCell = innerIndex; // Set the cell to the current outer index
-            }
-            Turn = playerTurn(board);
-            // Only proceed if cell is empty
-            if (board[outerIndex][innerIndex] === '') {
+        // Only proceed if cell is empty
+        if (board[outerIndex][innerIndex] === '') {
+            if (nextCell == null || nextCell === outerIndex) {
+                outerCell.style.backgroundColor = 'white'; // Highlight the outer square
+                if (board[innerIndex][9] !== '') {
+                    nextCell = null; // Reset cell if the outer square already has a winner
+                }
+                else {
+                    document.querySelectorAll('.outer-cell').forEach(cell => {
+                        if (cell.dataset.outerIndex == innerIndex) {
+                            cell.style.backgroundColor = 'lightgreen';
+                            cell.style.pointerEvents = "auto";// Highlight the next outer square
+                        } else {
+                            cell.style.pointerEvents = 'none'; // Disable pointer events for other outer squares
+                        }
+                    });
+                    nextCell = innerIndex; // Set the cell to the current outer index
+                }
+                Turn = playerTurn(board);
+
                 // Update the board state
                 board[outerIndex][innerIndex] = Turn;
 
