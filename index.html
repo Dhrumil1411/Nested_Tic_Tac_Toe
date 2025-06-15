@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <title>Nested Tic Tac Toe</title>
+</head>
+
+<body>
+    <div id="player-form" class="player-form">
+        <h1>Nested Tic Tac Toe</h1>
+        <input type="text" id="player1" placeholder="Player 1 (X)" required>
+        <input type="text" id="player2" placeholder="Player 2 (O)" required>
+        <button id="start-game">Start Game</button>
+
+    </div>
+
+    <div class="game-container" style="display: none;">
+        <div class="game-info">
+            <div id="player-names" class="player-names"></div>
+            <div id="player-turn" class="player-turn"></div>
+            <div class="wins" id="x" data-win="0">X : 0</div>
+            <div class="wins" id="o" data-win="0">O : 0</div>
+            <button id="reset-game" class="reset-game">Reset Game</button>
+
+        </div>
+
+        <div class="outer-board">
+            <!-- Row 1 -->
+            <div class="outer-cell" data-outer-index="0">
+                <div class="inner-board">
+                    <div class="inner-cell" data-inner-index="0"></div>
+                    <div class="inner-cell" data-inner-index="1"></div>
+                    <div class="inner-cell" data-inner-index="2"></div>
+                    <div class="inner-cell" data-inner-index="3"></div>
+                    <div class="inner-cell" data-inner-index="4"></div>
+                    <div class="inner-cell" data-inner-index="5"></div>
+                    <div class="inner-cell" data-inner-index="6"></div>
+                    <div class="inner-cell" data-inner-index="7"></div>
+                    <div class="inner-cell" data-inner-index="8"></div>
+                </div>
+            </div>
+            <div class="outer-cell" data-outer-index="1">
+                <div class="inner-board">
+                    <div class="inner-cell" data-inner-index="0"></div>
+                    <div class="inner-cell" data-inner-index="1"></div>
+                    <div class="inner-cell" data-inner-index="2"></div>
+                    <div class="inner-cell" data-inner-index="3"></div>
+                    <div class="inner-cell" data-inner-index="4"></div>
+                    <div class="inner-cell" data-inner-index="5"></div>
+                    <div class="inner-cell" data-inner-index="6"></div>
+                    <div class="inner-cell" data-inner-index="7"></div>
+                    <div class="inner-cell" data-inner-index="8"></div>
+                </div>
+            </div>
+            <div class="outer-cell" data-outer-index="2">
+                <div class="inner-board">
+                    <div class="inner-cell" data-inner-index="0"></div>
+                    <div class="inner-cell" data-inner-index="1"></div>
+                    <div class="inner-cell" data-inner-index="2"></div>
+                    <div class="inner-cell" data-inner-index="3"></div>
+                    <div class="inner-cell" data-inner-index="4"></div>
+                    <div class="inner-cell" data-inner-index="5"></div>
+                    <div class="inner-cell" data-inner-index="6"></div>
+                    <div class="inner-cell" data-inner-index="7"></div>
+                    <div class="inner-cell" data-inner-index="8"></div>
+                </div>
+            </div>
+            <!-- Row 2 -->
+            <div class="outer-cell" data-outer-index="3">
+                <div class="inner-board">
+                    <div class="inner-cell" data-inner-index="0"></div>
+                    <div class="inner-cell" data-inner-index="1"></div>
+                    <div class="inner-cell" data-inner-index="2"></div>
+                    <div class="inner-cell" data-inner-index="3"></div>
+                    <div class="inner-cell" data-inner-index="4"></div>
+                    <div class="inner-cell" data-inner-index="5"></div>
+                    <div class="inner-cell" data-inner-index="6"></div>
+                    <div class="inner-cell" data-inner-index="7"></div>
+                    <div class="inner-cell" data-inner-index="8"></div>
+                </div>
+            </div>
+            <div class="outer-cell" data-outer-index="4">
+                <div class="inner-board">
+                    <div class="inner-cell" data-inner-index="0"></div>
+                    <div class="inner-cell" data-inner-index="1"></div>
+                    <div class="inner-cell" data-inner-index="2"></div>
+                    <div class="inner-cell" data-inner-index="3"></div>
+                    <div class="inner-cell" data-inner-index="4"></div>
+                    <div class="inner-cell" data-inner-index="5"></div>
+                    <div class="inner-cell" data-inner-index="6"></div>
+                    <div class="inner-cell" data-inner-index="7"></div>
+                    <div class="inner-cell" data-inner-index="8"></div>
+                </div>
+            </div>
+            <div class="outer-cell" data-outer-index="5">
+                <div class="inner-board">
+                    <div class="inner-cell" data-inner-index="0"></div>
+                    <div class="inner-cell" data-inner-index="1"></div>
+                    <div class="inner-cell" data-inner-index="2"></div>
+                    <div class="inner-cell" data-inner-index="3"></div>
+                    <div class="inner-cell" data-inner-index="4"></div>
+                    <div class="inner-cell" data-inner-index="5"></div>
+                    <div class="inner-cell" data-inner-index="6"></div>
+                    <div class="inner-cell" data-inner-index="7"></div>
+                    <div class="inner-cell" data-inner-index="8"></div>
+                </div>
+            </div>
+            <!-- Row 3 -->
+            <div class="outer-cell" data-outer-index="6">
+                <div class="inner-board">
+                    <div class="inner-cell" data-inner-index="0"></div>
+                    <div class="inner-cell" data-inner-index="1"></div>
+                    <div class="inner-cell" data-inner-index="2"></div>
+                    <div class="inner-cell" data-inner-index="3"></div>
+                    <div class="inner-cell" data-inner-index="4"></div>
+                    <div class="inner-cell" data-inner-index="5"></div>
+                    <div class="inner-cell" data-inner-index="6"></div>
+                    <div class="inner-cell" data-inner-index="7"></div>
+                    <div class="inner-cell" data-inner-index="8"></div>
+                </div>
+            </div>
+            <div class="outer-cell" data-outer-index="7">
+                <div class="inner-board">
+                    <div class="inner-cell" data-inner-index="0"></div>
+                    <div class="inner-cell" data-inner-index="1"></div>
+                    <div class="inner-cell" data-inner-index="2"></div>
+                    <div class="inner-cell" data-inner-index="3"></div>
+                    <div class="inner-cell" data-inner-index="4"></div>
+                    <div class="inner-cell" data-inner-index="5"></div>
+                    <div class="inner-cell" data-inner-index="6"></div>
+                    <div class="inner-cell" data-inner-index="7"></div>
+                    <div class="inner-cell" data-inner-index="8"></div>
+                </div>
+            </div>
+            <div class="outer-cell" data-outer-index="8">
+                <div class="inner-board">
+                    <div class="inner-cell" data-inner-index="0"></div>
+                    <div class="inner-cell" data-inner-index="1"></div>
+                    <div class="inner-cell" data-inner-index="2"></div>
+                    <div class="inner-cell" data-inner-index="3"></div>
+                    <div class="inner-cell" data-inner-index="4"></div>
+                    <div class="inner-cell" data-inner-index="5"></div>
+                    <div class="inner-cell" data-inner-index="6"></div>
+                    <div class="inner-cell" data-inner-index="7"></div>
+                    <div class="inner-cell" data-inner-index="8"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js" defer></script>
+</body>
+
+</html>
