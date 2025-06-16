@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nested Tic Tac Toe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css"> </head>
+<body>
+    <h1>Nested Tic Tac Toe</h1>
+
+    <div id="lobby-section" class="container lobby-section">
+        <p>Your ID: <span id="user-id">Connecting...</span></p>
+        <button id="create-game-btn">Create New Game</button>
+        <p>OR</p>
+        <input type="text" id="game-id-input" placeholder="Enter Game ID">
+        <button id="join-game-btn">Join Game</button>
+    </div>
+
+    <div id="game-section" class="container game-section" style="display: none;">
+        <div class="game-info">
+            <div class="player-status">You are: <span id="my-player-symbol"></span></div>
+            <div class="current-turn"><span id="player-turn-display">Waiting for players...</span></div>
+            <div class="wins">X Wins: <span id="X-wins">0</span></div>
+            <div class="wins">O Wins: <span id="O-wins">0</span></div>
+        </div>
+
+        <div class="outer-board">
+            </div>
+
+        <button id="reset-game-btn" style="display: none;">Reset Game</button>
+        <button id="leave-game-btn">Leave Game</button>
+    </div>
+
+    <div id="my-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <p id="modal-message">Welcome to the Game.</p>
+            <div id="game-code-display" style="display:none;">
+                Game ID: <span id="displayed-game-id"></span>
+                <button class="copy-button" onclick="copyGameCode()">Copy</button>
+            </div>
+            <button id="modal-action-button" style="display:none;"></button>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
