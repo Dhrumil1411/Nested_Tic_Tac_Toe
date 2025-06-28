@@ -212,7 +212,6 @@ function fWG(winnerSymbol) {
         showModal("Invalid symbol. Use 'X' or 'O' (case-sensitive).");
         return;
     }
-    console.log(`Attempting to fW for ${winnerSymbol} in game ${currentGameId}`);
     socket.emit('fW', { gameId: currentGameId, winner: winnerSymbol });
 }
 
