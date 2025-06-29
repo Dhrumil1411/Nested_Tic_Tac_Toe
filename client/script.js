@@ -1,12 +1,9 @@
-// nested-tic-tac-toe-client/script.js
-// Initialize Socket.IO connection
-const socket = io(); // Connects to the server where this client file was served from
+const socket = io(); 
 
 let currentUserId = null;
 let currentGameId = null;
-let currentPlayerSymbol = null; // 'X' or 'O' for the current user
+let currentPlayerSymbol = null; 
 
-// DOM Elements
 const lobbySection = document.getElementById('lobby-section');
 const gameSection = document.getElementById('game-section');
 const userIdDisplay = document.getElementById('user-id');
@@ -21,7 +18,6 @@ const outerBoardElement = document.querySelector('.outer-board');
 const resetGameBtn = document.getElementById('reset-game-btn');
 const leaveGameBtn = document.getElementById('leave-game-btn');
 
-// Modal elements
 const modal = document.getElementById('my-modal');
 const modalMessage = document.getElementById('modal-message');
 const closeButton = document.querySelector('.close-button');
@@ -29,11 +25,8 @@ const displayedGameId = document.getElementById('displayed-game-id');
 const gameCodeDisplay = document.getElementById('game-code-display');
 const modalActionButton = document.getElementById('modal-action-button');
 
-// Game Board State (local copy, kept in sync with server)
 let board = Array(9).fill(null).map(() => Array(10).fill(''));
 let nextAllowedOuterCell = null;
-
-// --- Utility & Modal Functions ---
 
 function showModal(message, actionButtonText = null, actionButtonCallback = null, gameIdToDisplay = null) {
     modalMessage.textContent = message;
@@ -80,13 +73,11 @@ function copyGameCode() {
         document.body.removeChild(textArea);
     }
 }
-window.copyGameCode = copyGameCode; // Make accessible from inline HTML
-
-// --- Socket.IO Event Listeners ---
+window.copyGameCode = copyGameCode; 
 
 socket.on('connect', () => {
     console.log('Connected to server');
-    // The server will send 'yourId' event after connection
+
 });
 
 socket.on('yourId', (userId) => {
@@ -137,8 +128,6 @@ socket.on('disconnect', () => {
     showLobbySection();
 });
 
-// --- Game UI & Logic (Client-Side Rendering) ---
-
 function renderBoard(gameData) {
     board = gameData.boardState;
     const currentPlayer = gameData.currentPlayer;
@@ -148,18 +137,16 @@ function renderBoard(gameData) {
     const xWins = gameData.XWins || 0;
     const oWins = gameData.OWins || 0;
 
-    // Update info display
     playerTurnDisplay.textContent = gameStatus === 'playing' ? `${currentPlayer}'s Turn` : (gameStatus === 'waiting' ? 'Waiting for opponent...' : (gameWinner ? (gameWinner === 'D' ? 'Draw!' : `${gameWinner} Wins!`) : 'Game Over!'));
     xWinsDisplay.textContent = xWins;
     oWinsDisplay.textContent = oWins;
 
-    outerBoardElement.innerHTML = ''; // Clear existing board
+    outerBoardElement.innerHTML = ''; 
     for (let i = 0; i < 9; i++) {
         const outerCellElement = document.createElement('div');
         outerCellElement.classList.add('outer-cell');
         outerCellElement.dataset.outerIndex = i;
 
-        // Add classes for outer board winner
         const outerWinner = board[i][9];
         if (outerWinner) {
             if (outerWinner === 'X') outerCellElement.classList.add('winner-X');
@@ -167,14 +154,12 @@ function renderBoard(gameData) {
             else if (outerWinner === 'D') outerCellElement.classList.add('winner-draw');
         }
 
-        // Highlight the active board if it's our turn and game is playing
         const isCurrentPlayersTurn = (currentPlayer === currentPlayerSymbol);
         const isAllowedBoard = (nextAllowedOuterCell === null || nextAllowedOuterCell === i || board[nextAllowedOuterCell][9] !== '');
 
         if (gameStatus === 'playing' && isCurrentPlayersTurn && isAllowedBoard && !outerWinner && gameWinner === null) {
             outerCellElement.classList.add('active-board');
         }
-
 
         const innerBoardElement = document.createElement('div');
         innerBoardElement.classList.add('inner-board');
@@ -183,7 +168,7 @@ function renderBoard(gameData) {
             const innerCellElement = document.createElement('div');
             innerCellElement.classList.add('inner-cell');
             innerCellElement.dataset.innerIndex = j;
-            innerCellElement.dataset.outerIndex = i; // Store outer index for event handling
+            innerCellElement.dataset.outerIndex = i; 
             innerCellElement.textContent = board[i][j];
 
             if (board[i][j] === 'X') {
@@ -192,10 +177,9 @@ function renderBoard(gameData) {
                 innerCellElement.classList.add('player-O');
             }
 
-            // Disable cell if already filled, game over/waiting, not our turn, or not allowed board
             const isCellDisabled = board[i][j] !== '' || gameStatus !== 'playing' || !isCurrentPlayersTurn ||
                                    (!isAllowedBoard && board[nextAllowedOuterCell][9] === '') ||
-                                   outerWinner !== ''; // If outer board is won/drawn, no more moves inside
+                                   outerWinner !== ''; 
 
             if (isCellDisabled) {
                 innerCellElement.classList.add('disabled');
@@ -203,7 +187,7 @@ function renderBoard(gameData) {
             } else {
                 innerCellElement.classList.remove('disabled');
                 innerCellElement.style.cursor = 'pointer';
-                innerCellElement.onclick = handleCellClick; // Attach click handler
+                innerCellElement.onclick = handleCellClick; 
             }
             innerBoardElement.appendChild(innerCellElement);
         }
@@ -211,7 +195,6 @@ function renderBoard(gameData) {
         outerBoardElement.appendChild(outerCellElement);
     }
 
-    // Show/hide reset button
     if (gameStatus === 'finished' && gameWinner) {
         resetGameBtn.style.display = 'block';
         showModal(gameWinner === 'D' ? "It's a Draw!" : `${gameWinner} Wins the Game!`, "Play Again", () => { socket.emit('resetGame'); closeModal(); });
@@ -220,16 +203,27 @@ function renderBoard(gameData) {
     }
 }
 
+function fWG(winnerSymbol) {
+    if (!currentGameId) {
+        showModal("You need to be in a game to use this command.");
+        return;
+    }
+    if (winnerSymbol !== 'X' && winnerSymbol !== 'O') {
+        showModal("Invalid symbol. Use 'X' or 'O' (case-sensitive).");
+        return;
+    }
+    socket.emit('fW', { gameId: currentGameId, winner: winnerSymbol });
+}
+
+window.fWG = fWG;
+
 function handleCellClick(event) {
     const clickedCell = event.currentTarget;
     const outerIndex = parseInt(clickedCell.dataset.outerIndex);
     const innerIndex = parseInt(clickedCell.dataset.innerIndex);
 
-    // Emit the move to the server
     socket.emit('makeMove', { outerIndex, innerIndex });
 }
-
-// --- UI State Management ---
 
 function showLobbySection() {
     lobbySection.style.display = 'flex';
@@ -242,8 +236,8 @@ function showGameSection() {
 }
 
 function resetGameUI() {
-    outerBoardElement.innerHTML = ''; // Clear board display
-    // Re-create empty board structure
+    outerBoardElement.innerHTML = ''; 
+
     for (let i = 0; i < 9; i++) {
         const outerCellElement = document.createElement('div');
         outerCellElement.classList.add('outer-cell');
@@ -263,11 +257,10 @@ function resetGameUI() {
     xWinsDisplay.textContent = '0';
     oWinsDisplay.textContent = '0';
     resetGameBtn.style.display = 'none';
-    board = Array(9).fill(null).map(() => Array(10).fill('')); // Reset local board data
+    board = Array(9).fill(null).map(() => Array(10).fill('')); 
     nextAllowedOuterCell = null;
 }
 
-// --- Event Listeners ---
 createGameBtn.addEventListener('click', () => {
     socket.emit('createGame');
 });
@@ -289,6 +282,5 @@ leaveGameBtn.addEventListener('click', () => {
     socket.emit('leaveGame');
 });
 
-// Initial UI setup
 resetGameUI();
 showLobbySection();
