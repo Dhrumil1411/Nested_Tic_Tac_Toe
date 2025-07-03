@@ -1,8 +1,8 @@
-const socket = io(); 
+const socket = io();
 
 let currentUserId = null;
 let currentGameId = null;
-let currentPlayerSymbol = null; 
+let currentPlayerSymbol = null;
 
 const lobbySection = document.getElementById('lobby-section');
 const gameSection = document.getElementById('game-section');
@@ -17,6 +17,7 @@ const oWinsDisplay = document.getElementById('O-wins');
 const outerBoardElement = document.querySelector('.outer-board');
 const resetGameBtn = document.getElementById('reset-game-btn');
 const leaveGameBtn = document.getElementById('leave-game-btn');
+const currentGameIdValueDisplay = document.getElementById('current-game-id-value'); 
 
 const modal = document.getElementById('my-modal');
 const modalMessage = document.getElementById('modal-message');
@@ -73,11 +74,10 @@ function copyGameCode() {
         document.body.removeChild(textArea);
     }
 }
-window.copyGameCode = copyGameCode; 
+window.copyGameCode = copyGameCode;
 
 socket.on('connect', () => {
     console.log('Connected to server');
-
 });
 
 socket.on('yourId', (userId) => {
@@ -89,6 +89,7 @@ socket.on('gameCreated', (gameData) => {
     currentGameId = gameData.id;
     currentPlayerSymbol = gameData.players.find(p => p.id === currentUserId).symbol;
     myPlayerSymbolDisplay.textContent = currentPlayerSymbol;
+    currentGameIdValueDisplay.textContent = currentGameId; 
     showModal(`Game created! Share this ID:`, null, null, currentGameId);
     showGameSection();
     renderBoard(gameData);
@@ -99,6 +100,7 @@ socket.on('gameJoined', (data) => {
     currentGameId = gameData.id;
     currentPlayerSymbol = data.symbol;
     myPlayerSymbolDisplay.textContent = currentPlayerSymbol;
+    currentGameIdValueDisplay.textContent = currentGameId; 
     showModal(`Joined game ${currentGameId} as ${currentPlayerSymbol}.`);
     showGameSection();
     renderBoard(gameData);
@@ -106,7 +108,19 @@ socket.on('gameJoined', (data) => {
 
 socket.on('gameUpdate', (gameData) => {
     console.log('Game state updated:', gameData);
+    const oldXWins = parseInt(xWinsDisplay.textContent);
+    const oldOWins = parseInt(oWinsDisplay.textContent);
+
     renderBoard(gameData);
+
+    if (gameData.XWins > oldXWins) {
+        xWinsDisplay.classList.add('score-bump');
+        setTimeout(() => xWinsDisplay.classList.remove('score-bump'), 300);
+    }
+    if (gameData.OWins > oldOWins) {
+        oWinsDisplay.classList.add('score-bump');
+        setTimeout(() => oWinsDisplay.classList.remove('score-bump'), 300);
+    }
 });
 
 socket.on('gameError', (message) => {
@@ -138,10 +152,18 @@ function renderBoard(gameData) {
     const oWins = gameData.OWins || 0;
 
     playerTurnDisplay.textContent = gameStatus === 'playing' ? `${currentPlayer}'s Turn` : (gameStatus === 'waiting' ? 'Waiting for opponent...' : (gameWinner ? (gameWinner === 'D' ? 'Draw!' : `${gameWinner} Wins!`) : 'Game Over!'));
+
+    if (gameStatus === 'playing' && currentPlayer === currentPlayerSymbol) {
+        playerTurnDisplay.classList.add('current-turn');
+    } else {
+        playerTurnDisplay.classList.remove('current-turn');
+    }
+
     xWinsDisplay.textContent = xWins;
     oWinsDisplay.textContent = oWins;
+    currentGameIdValueDisplay.textContent = currentGameId || 'N/A'; 
 
-    outerBoardElement.innerHTML = ''; 
+    outerBoardElement.innerHTML = '';
     for (let i = 0; i < 9; i++) {
         const outerCellElement = document.createElement('div');
         outerCellElement.classList.add('outer-cell');
@@ -168,7 +190,7 @@ function renderBoard(gameData) {
             const innerCellElement = document.createElement('div');
             innerCellElement.classList.add('inner-cell');
             innerCellElement.dataset.innerIndex = j;
-            innerCellElement.dataset.outerIndex = i; 
+            innerCellElement.dataset.outerIndex = i;
             innerCellElement.textContent = board[i][j];
 
             if (board[i][j] === 'X') {
@@ -179,7 +201,7 @@ function renderBoard(gameData) {
 
             const isCellDisabled = board[i][j] !== '' || gameStatus !== 'playing' || !isCurrentPlayersTurn ||
                                    (!isAllowedBoard && board[nextAllowedOuterCell][9] === '') ||
-                                   outerWinner !== ''; 
+                                   outerWinner !== '';
 
             if (isCellDisabled) {
                 innerCellElement.classList.add('disabled');
@@ -187,7 +209,7 @@ function renderBoard(gameData) {
             } else {
                 innerCellElement.classList.remove('disabled');
                 innerCellElement.style.cursor = 'pointer';
-                innerCellElement.onclick = handleCellClick; 
+                innerCellElement.onclick = handleCellClick;
             }
             innerBoardElement.appendChild(innerCellElement);
         }
@@ -236,7 +258,8 @@ function showGameSection() {
 }
 
 function resetGameUI() {
-    outerBoardElement.innerHTML = ''; 
+    outerBoardElement.innerHTML = '';
+    currentGameIdValueDisplay.textContent = 'N/A'; 
 
     for (let i = 0; i < 9; i++) {
         const outerCellElement = document.createElement('div');
@@ -257,7 +280,7 @@ function resetGameUI() {
     xWinsDisplay.textContent = '0';
     oWinsDisplay.textContent = '0';
     resetGameBtn.style.display = 'none';
-    board = Array(9).fill(null).map(() => Array(10).fill('')); 
+    board = Array(9).fill(null).map(() => Array(10).fill(''));
     nextAllowedOuterCell = null;
 }
 

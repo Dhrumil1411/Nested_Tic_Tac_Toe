@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nested Tic Tac Toe</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css"> </head>
+    <link rel="stylesheet" href="style.css">
+</head>
 <body>
     <h1>Nested Tic Tac Toe</h1>
 
@@ -23,13 +24,16 @@
             <div class="current-turn"><span id="player-turn-display">Waiting for players...</span></div>
             <div class="wins">X Wins: <span id="X-wins">0</span></div>
             <div class="wins">O Wins: <span id="O-wins">0</span></div>
+            <div class="game-id-display">Game ID: <span id="current-game-id-value">N/A</span></div>
         </div>
 
         <div class="outer-board">
-            </div>
+        </div>
 
-        <button id="reset-game-btn" style="display: none;">Reset Game</button>
-        <button id="leave-game-btn">Leave Game</button>
+        <div class="game-controls">
+            <button id="reset-game-btn" style="display: none;">Reset Game</button>
+            <button id="leave-game-btn">Leave Game</button>
+        </div>
     </div>
 
     <div id="my-modal" class="modal">
